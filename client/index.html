@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html ng-app>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    
+    <title>FinalDemo1</title>
+    
+    <style>
+      #controller
+        {
+        position: absolute;
+        left: 0px;
+        width: 250px;
+        top: 0px;
+        bottom: 0px;
+        margin: 10px;
+        }
+        
+      #threedpane
+        {
+        position: absolute;
+        left: 250px;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+        margin: 10px;
+        border: 1px solid gray;
+        }
+
+      ul 
+        {
+        list-style-type: none;
+        }
+        
+      ul li
+        {
+        cursor: pointer;
+        }
+    </style>
+
+    <!-- Why punish myself? -->    
+    <script src="js_lib/jquery.min.js"></script>
+
+    <!-- This is an AngularJS demo. -->
+    <script src="js_lib/angular.min.js"></script>
+    
+    <!-- Include sources from the 3D demo. -->
+    <script src="js_lib/three.min.js"></script>
+    <script src="js_lib/TrackballControls.js"></script>
+    <script src="js_lib/JSONLoader.js"></script>
+
+    <!-- My demo script. -->
+    <script src="js_include/demo1.js"></script>
+
+  </head>
+  
+  <body>
+    <!-- Create a threedmodel controller. -->
+    <div id="controller" ng-controller="ThreeDModel">
+    
+      <h1>ThreeDModel Client</h1>
+    
+      <!-- <form ng-submit="sendMessage()">  -->
+      <form>
+        
+        <!-- Connect to server and display models. -->
+        <input id="connect" type="button" value="Connect">
+        <input id="disconnect" type="button" value="Disconnect">        
+        
+        <hr>
+        
+        <!-- Probably delete this stuff at some point. 
+        Bind the message field to the messageText model field.
+        <input 
+          id="message"
+          type="text" 
+          ng-model="messageText"  
+          size="30"
+          placeholder="Type your message here">
+          
+        No CGI required here.
+        <input id="send" type="submit" value="Send">  -->
+        
+      </form>
+      
+      <!-- Make a GET query on the REST model for available three D models. -->
+      <ul>
+        <li ng-repeat="threedmodel in threedmodels">
+          <span ng-click="loadModel(threedmodel.name);">
+           {{threedmodel.name}}
+          </span>
+        </li>
+      </ul>
+      
+    </div>
+    
+    <div id="threedpane"></div>
+    
+  </body>
+  
+</html>
