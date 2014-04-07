@@ -66,20 +66,20 @@
         <!-- Connect to server and display models. -->
         <input id="connect" type="button" value="Connect">
         <input id="disconnect" type="button" value="Disconnect">        
-        
+        <br>
         <hr>
         
-        <!-- Probably delete this stuff at some point. 
-        Bind the message field to the messageText model field.
-        <input 
-          id="message"
-          type="text" 
-          ng-model="messageText"  
-          size="30"
-          placeholder="Type your message here">
-          
-        No CGI required here.
-        <input id="send" type="submit" value="Send">  -->
+        <div id="uploadmodel">
+          <input type="file" onchange="scope.setFile(this)"></input>
+          <br>
+          <input 
+            id="upload" 
+            type="button" 
+            value="Upload" 
+            ng-click="uploadModel()"></input>
+          <br>
+          <hr>
+        </div>
         
       </form>
       

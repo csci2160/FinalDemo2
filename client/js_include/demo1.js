@@ -267,6 +267,22 @@ $(document).ready(
                     });
                 }
               }
+            else if(message.action == 'newmodel')
+              {
+              // Clear things out.
+              angular.element($('#controller')).scope().clear().$apply();
+    
+              // Load models.
+              angular.element($('#controller')).scope().loadModels();
+              }
+            else if(message.action == 'deletemodel')
+              {
+              // Clear things out.
+              angular.element($('#controller')).scope().clear().$apply();
+    
+              // Load models.
+              angular.element($('#controller')).scope().loadModels();
+              }
             };
 
         // Let the user know the connection closed.
@@ -296,8 +312,11 @@ $(document).ready(
 // AngularJS controller for ThreeDModels demo.
 function ThreeDModel($scope) 
   {
+  window.scope = $scope;
+  
   // Create a model for our three D models.
   $scope.threedmodels = [];
+  $scope.file = null;
   
   /* // Send a message.
   $scope.sendMessage = 
@@ -322,6 +341,34 @@ function ThreeDModel($scope)
       return $scope;
       };
       
+  // Load all models from the server.
+  $scope.loadModels =
+    function ()
+      {
+      $.ajax(
+        {
+        url: "http://" + server + "/models/",
+    
+        success:
+          function(data)
+            {
+            $scope.threedmodels = data;
+        
+            $scope.$apply();
+        
+            for(var i in $scope.threedmodels)
+              {
+              var threedmodel = $scope.threedmodels[i];
+
+              /* previewScene(
+                threedmodel.name,
+                "http://" + server + "/models/" + threedmodel.name, 
+                0x009900); */
+              }
+            }
+        });
+      };
+
   $scope.loadModel =
     function ($modelname)
       {
@@ -356,5 +403,33 @@ function ThreeDModel($scope)
       
       // Return the scope in case the caller wants to manually update.
       return $scope;
+      };
+      
+  // Set the upload file.
+  $scope.setFile =
+    function (element)
+      {
+      $scope.$apply(
+        function ()
+          {
+          $scope.file = element.files[0];
+          });
+      };
+      
+  // Upload a file.
+  $scope.uploadModel = 
+    function () 
+      {
+      var formData = new FormData();
+      formData.append("file", $scope.file, $scope.file.name);
+
+      $.ajax(
+        {
+        url: "http://" + server + "/models/" + $scope.file.name,
+        type: "PUT",
+        data: formData,
+        processData: false,
+        contentType: false
+        });
       };
   }
