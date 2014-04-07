@@ -197,7 +197,6 @@ server.get(
   '/models/:model',
   function (request, response, next)
     {
-    console.log("Requesting model " + request.params.model);
     // Get the requested model.
     var model = models[request.params.model];
     
@@ -325,7 +324,6 @@ wss.on(
   
   function(ws) 
     {
-    console.log("connected!");
     // On successful connection, setup message handlers.
     ws.on(
       'message', 

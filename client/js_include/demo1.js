@@ -4,12 +4,13 @@ var scene = null;
 var camera = null;
 var view = null;
 var timer = null;
+var currentModel = null;
 
 // Create a variable at the top-level scope so everyone can see it.
 var ws = null;
 
 // Change this based on whatever IP address I get today.
-var server = 'localhost:8080';
+var server = '192.168.0.207:8080';
 
 // Initialize a scene with an id, model, and colour.
 function initScene(modelSource, color)
@@ -58,7 +59,19 @@ function initScene(modelSource, color)
   controls = 
     new THREE.TrackballControls(
       camera, 
-      renderer.domElement);
+      renderer.domElement,
+      function(object)
+	      {
+	      var message = 
+	        {
+	        action: 'update',
+	        name: currentModel,
+	        update: object
+	        };
+	        
+	      ws.send(JSON.stringify(message));
+	      });
+
 
   // Setup the controls with some good defaults.
   controls.rotateSpeed = 1.0;
@@ -179,7 +192,7 @@ function stopListeningToEvents()
   
 // Once the document is ready, setup the interface and bind functions to 
 // DOM elements.
-$(document).ready(
+/* $(document).ready(
   function ()
     {
     // Add a new container.
@@ -188,7 +201,7 @@ $(document).ready(
     initScene("http://" + server + "/models/teapot.js", 0x009900);
     
     listenToEvents();
-    });
+    }); */
 
 // Once the document is ready, setup the interface and bind functions to 
 // DOM elements.
@@ -240,10 +253,20 @@ $(document).ready(
             // Manually parse the JSON.
             var message = JSON.parse(event.data);
             
-            // TODO: Route these messages to three.js objects.
-            
-            // Log the message and manually refresh AngularJS.
-            //angular.element($('#controller')).scope().log(message).$apply();
+            if(message.action == 'update')
+              {
+              // Only update the model if it matches the current model.
+              if(message.name == currentModel)
+                {
+                controls.handleRemoteEvent(message.update);
+
+                requestAnimationFrame(
+                  function()
+                    {
+                    renderer.render(scene, camera);
+                    });
+                }
+              }
             };
 
         // Let the user know the connection closed.
@@ -302,7 +325,16 @@ function ThreeDModel($scope)
   $scope.loadModel =
     function ($modelname)
       {
-      alert("Loading " + $modelname);
+      currentModel = $modelname;
+      
+      $('#container').remove();
+      
+      // Add a new container.
+      $('#threedpane').append('<div id="container"></div>');
+    
+      initScene("http://" + server + "/models/" + $modelname, 0x009900);
+    
+      listenToEvents();
       };
 
   /* // Log a message.
